@@ -24,3 +24,12 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+.login-page {
+  background-image: url("/bg.jpg");
+  background-size: cover;
+  background-position: center;
+}
+
+.container-page {
+  @apply px-4 md:px-14;
+}
