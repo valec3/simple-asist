@@ -8,14 +8,14 @@ import {
   CircularProgress,
   Alert,
 } from "@mui/material";
-
+import { useRouter } from "next/navigation";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
-
+  const router = useRouter();
   // Función simulada de login
   const handleLogin = (e) => {
     e.preventDefault();
@@ -27,6 +27,8 @@ const Login = () => {
       setLoading(false);
       if (email === "admin@correo.com" && password === "123456") {
         setSuccess(true);
+        router.push("/admin");
+        router;
       } else {
         setError("Credenciales inválidas. Intenta de nuevo.");
       }

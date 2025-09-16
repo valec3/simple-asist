@@ -316,6 +316,7 @@ const exampleStudents = [
     code: "20250001",
     full_name: "Juan Pérez",
     email: "juan.perez@uni.edu.pe",
+    number: "987654321",
     facultyId: "fac-ciencias-agrarias",
     faculty: "FACULTAD DE CIENCIAS AGRARIAS",
     schoolId: "esc-ing-agronomica",
@@ -328,6 +329,7 @@ const exampleStudents = [
     code: "20250002",
     full_name: "María López",
     email: "maria.lopez@uni.edu.pe",
+    number: "912345678",
     facultyId: "fac-mecanica-electrica-electronica-sistemas",
     faculty:
       "FACULTAD DE INGENIERIA MECANICA ELECTRICA, ELECTRONICA Y SISTEMAS",
@@ -341,6 +343,7 @@ const exampleStudents = [
     code: "20250003",
     full_name: "Carlos Gómez",
     email: "carlos.gomez@uni.edu.pe",
+    number: "923456789",
     facultyId: "fac-ciencias-salud",
     faculty: "FACULTAD DE CIENCIAS DE LA SALUD",
     schoolId: "esc-nutricion",
