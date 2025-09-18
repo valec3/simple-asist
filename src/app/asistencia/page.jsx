@@ -26,6 +26,7 @@ import TableStudentsDesktop from "./TableStudentsDesktop";
 import studentService from "@/firebase/students";
 import { useRouter } from "next/navigation";
 import attendanceService from "@/firebase/attendance";
+import "@/firebase/seed";
 // Materias ejemplo
 const optionsFilter = ["Obligatorio", "Todos"];
 
@@ -48,13 +49,15 @@ const AttendanceScreen = () => {
       students: students.map((s) => ({
         id: s.id,
         estado: s.estado,
+        full_name: s.full_name,
+        code: s.code,
       })),
     };
     setTimeout(() => {
       setIsLoading(false);
     }, 2000); // Simula una operación de 2 segundos
     console.log(attendanceData);
-    // attendanceService.addAttendance(attendanceData);
+    attendanceService.addAttendance(attendanceData);
   };
 
   const handleEstado = (id, estado) => {
