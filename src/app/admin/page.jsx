@@ -111,7 +111,7 @@ const Page = () => {
               },
               width: "100%",
             }}
-            onClick={() => router.push("/historial")}
+            onClick={() => router.push("/asistencia-historial")}
           >
             <DescriptionIcon sx={{ fontSize: 50, color: "#588" }} />
             <Box>

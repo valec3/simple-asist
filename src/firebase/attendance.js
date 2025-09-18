@@ -1,9 +1,22 @@
-import { collection, addDoc, setDoc, doc } from "firebase/firestore";
+import { collection, addDoc, setDoc, doc, getDocs } from "firebase/firestore";
 import db from "./config.js";
 
 class AttendanceService {
   constructor() {
     this.collection = collection(db, "attendances");
+  }
+  async getAttendances() {
+    try {
+      const querySnapshot = await getDocs(this.collection);
+      const attendances = [];
+      querySnapshot.forEach((doc) => {
+        attendances.push({ id: doc.id, ...doc.data() });
+      });
+      return attendances;
+    } catch (error) {
+      console.error("Error fetching attendances: ", error);
+      return [];
+    }
   }
   async addAttendance(attendance) {
     try {
