@@ -746,5 +746,5 @@ async function seedStudentsOnly() {
 }
 
 // Ejecutar la función de seed
-seedStudentsOnly();
+// seedStudentsOnly();
 // seedFirestore();
