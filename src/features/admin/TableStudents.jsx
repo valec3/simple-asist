@@ -23,7 +23,7 @@ import AddIcon from "@mui/icons-material/Add";
 import { useTheme } from "@mui/material/styles";
 import studentService from "@/firebase/students";
 import ModalAddStudent from "./ModalAddStudent";
-
+import { faculties } from "@/firebase/seed";
 // Mapeo de días para mostrar como texto
 const daysMap = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 // --- Header con buscador, filtros y botón ---
@@ -52,10 +52,11 @@ const TableHeaderStudents = ({ onSearch, onFilterFaculty, onAdd }) => {
         sx={{ minWidth: 200 }}
       >
         <MenuItem value="">Todas</MenuItem>
-        <MenuItem value="FACULTAD DE CIENCIAS AGRARIAS">
-          Ciencias Agrarias
-        </MenuItem>
-        <MenuItem value="FACULTAD DE INGENIERÍA">Ingeniería</MenuItem>
+        {faculties.map((fac) => (
+          <MenuItem key={fac.id} value={fac.name}>
+            {fac.name}
+          </MenuItem>
+        ))}
       </TextField>
       <Button
         variant="contained"
@@ -76,6 +77,7 @@ const TableStudents = () => {
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [studentsData, setStudentsData] = useState([]);
   const [modalOpen, setModalOpen] = useState(false);
+  const [editingStudent, setEditingStudent] = useState(null);
   useEffect(() => {
     const fetchStudents = async () => {
       const data = await studentService.getAllStudents();
@@ -83,7 +85,25 @@ const TableStudents = () => {
     };
     fetchStudents();
   }, []);
-  console.log(studentsData);
+  const handleOpenModalEdit = (student) => {
+    setEditingStudent(student);
+    setModalOpen(true);
+  };
+  const handleSubmitStudent = (student) => {
+    if (editingStudent) {
+      // Actualizar estudiante existente
+      const updatedStudents = studentsData.map((s) =>
+        s.id === student.id ? student : s
+      );
+      setStudentsData(updatedStudents);
+      studentService.updateStudent(student.id, student);
+      setEditingStudent(null);
+    } else {
+      // Agregar nuevo estudiante
+      setStudentsData([...studentsData, student]);
+      studentService.addStudent(student);
+    }
+  };
   // Filtrado dinámico
   const filteredStudents = studentsData.filter(
     (s) =>
@@ -145,7 +165,12 @@ const TableStudents = () => {
                   </TableCell>
                   <TableCell align="center">
                     <Stack direction="row" spacing={1} justifyContent="center">
-                      <Button variant="outlined" size="small" color="primary">
+                      <Button
+                        variant="outlined"
+                        size="small"
+                        color="primary"
+                        onClick={() => handleOpenModalEdit(student)}
+                      >
                         <EditSquareIcon sx={{ fontSize: 18, mr: 0.5 }} />
                       </Button>
                       <Button variant="outlined" size="small" color="error">
@@ -191,10 +216,8 @@ const TableStudents = () => {
       <ModalAddStudent
         open={modalOpen}
         handleClose={() => setModalOpen(false)}
-        handleSave={(newStudent) => {
-          setStudentsData([...studentsData, newStudent]);
-          studentService.addStudent(newStudent);
-        }}
+        handleSave={handleSubmitStudent}
+        initialData={editingStudent}
       />
     </div>
   );

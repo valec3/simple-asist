@@ -8,7 +8,6 @@ import {
   Typography,
   Button,
   TextField,
-  MenuItem,
   useMediaQuery,
   useTheme,
   CircularProgress,
@@ -26,26 +25,44 @@ import TableStudentsDesktop from "./TableStudentsDesktop";
 import studentService from "@/firebase/students";
 import { useRouter } from "next/navigation";
 import attendanceService from "@/firebase/attendance";
-import "@/firebase/seed";
+import { toast } from "react-toastify";
 // Materias ejemplo
 const optionsFilter = ["Obligatorio", "Todos"];
 
+const days = ["lunes", "martes", "miércoles", "jueves", "viernes", "sábado"];
 const AttendanceScreen = () => {
   const [students, setStudents] = useState([]);
-  const [materia, setMateria] = useState("");
   const [search, setSearch] = useState("");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
-  // const [attendance, setAttendance] = useState([]);
+  const [indexDay, setIndexDay] = useState(new Date().getDay()); // 1=Lun, 2=Mar, 3=Mié, 4=Jue, 5=Vie, 6=Sáb
+  const validateCompleteAttendance = (students) => {
+    return students.every((s) => s.estado !== "Pendiente");
+  };
   const handleSaveAttendance = async () => {
+    if (!validateCompleteAttendance(students)) {
+      alert("Por favor, complete la asistencia de todos los estudiantes.");
+      return;
+    }
     // Lógica para guardar la
     setIsLoading(true);
     console.log("Guardar asistencia", students);
     const today = new Date();
+
+    const peruDate = new Intl.DateTimeFormat("es-PE", {
+      timeZone: "America/Lima",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+      .format(today)
+      .split("/")
+      .reverse()
+      .join("-");
     const attendanceData = {
-      date: today.toISOString().split("T")[0], // Fecha en formato YYYY-MM-DD
+      date: peruDate,
       students: students.map((s) => ({
         id: s.id,
         estado: s.estado,
@@ -53,11 +70,12 @@ const AttendanceScreen = () => {
         code: s.code,
       })),
     };
+    console.log(attendanceData);
+    toast.success("Asistencia guardada correctamente");
+    await attendanceService.addAttendance(attendanceData);
     setTimeout(() => {
       setIsLoading(false);
     }, 2000); // Simula una operación de 2 segundos
-    console.log(attendanceData);
-    attendanceService.addAttendance(attendanceData);
   };
 
   const handleEstado = (id, estado) => {
@@ -68,7 +86,10 @@ const AttendanceScreen = () => {
   useEffect(() => {
     const fetchStudents = async () => {
       const data = await studentService.getAllStudents();
-      setStudents(data);
+      // Filtrar estudiantes que tienen clases el día actual
+      const filtered = data.filter((s) => s.selectedDays.includes(indexDay));
+      filtered.forEach((s) => (s.estado = "Pendiente"));
+      setStudents(filtered);
     };
     fetchStudents();
   }, []);
@@ -78,14 +99,14 @@ const AttendanceScreen = () => {
   const ausentes = students.filter((s) => s.estado === "Ausente").length;
   const tardanzas = students.filter((s) => s.estado === "Tardanza").length;
   const pendientes = students.filter((s) => s.estado === "Pendiente").length;
-
+  console.log(students);
   // Filtro por búsqueda
   const filteredStudents = students.filter(
     (s) =>
       s.full_name.toLowerCase().includes(search.toLowerCase()) ||
       s.code.includes(search.toLowerCase())
   );
-  console.log(isLoading);
+  console.log(indexDay);
   return (
     <Box p={3} sx={{ backgroundColor: "#f7f9fc", minHeight: "100vh" }}>
       {/* Header */}
@@ -103,7 +124,7 @@ const AttendanceScreen = () => {
             startIcon={<ArrowBack />}
             variant="text"
             sx={{ textTransform: "none" }}
-            onClick={() => router.back()}
+            onClick={() => router.push("/admin")}
           >
             Volver
           </Button>
@@ -114,29 +135,14 @@ const AttendanceScreen = () => {
 
         <Box display="flex" flexDirection={{ xs: "column", sm: "row" }} gap={2}>
           <TextField
-            select
             size="small"
-            label="Horario"
-            value={materia}
-            onChange={(e) => setMateria(e.target.value)}
-            sx={{ minWidth: { xs: "100%", sm: 200 } }}
-          >
-            {optionsFilter.map((m) => (
-              <MenuItem key={m} value={m}>
-                {m}
-              </MenuItem>
-            ))}
-          </TextField>
-
-          <TextField
-            size="small"
-            placeholder="Buscar por código..."
+            placeholder="Buscar por código, nombre..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             InputProps={{
               startAdornment: <Search sx={{ mr: 1, color: "gray" }} />,
             }}
-            sx={{ minWidth: { xs: "100%", sm: 220 } }}
+            sx={{ minWidth: { xs: "100%", sm: 220, md: 340 } }}
           />
 
           <Button

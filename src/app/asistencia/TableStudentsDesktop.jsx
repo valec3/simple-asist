@@ -11,6 +11,8 @@ import {
   IconButton,
 } from "@mui/material";
 import { AccessTime, Cancel, CheckCircle } from "@mui/icons-material";
+const daysMap = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
+
 const TableStudentsDesktop = ({ filteredStudents, handleEstado }) => {
   return (
     <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
@@ -36,6 +38,9 @@ const TableStudentsDesktop = ({ filteredStudents, handleEstado }) => {
             <TableRow key={s.id}>
               <TableCell>{s.code}</TableCell>
               <TableCell>{s.full_name}</TableCell>
+              <TableCell>
+                {s.selectedDays.map((d) => daysMap[d]).join(", ")}
+              </TableCell>
               <TableCell>
                 <Chip
                   label={s.estado ?? "Pendiente"}

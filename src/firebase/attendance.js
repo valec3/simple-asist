@@ -33,13 +33,23 @@ class AttendanceService {
   async formatAttendanceData(attendance) {
     const { students } = attendance;
     const today = new Date();
-    const date = today.toISOString().split("T")[0];
+    const peruDate = new Intl.DateTimeFormat("es-PE", {
+      timeZone: "America/Lima",
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    })
+      .format(today)
+      .split("/")
+      .reverse()
+      .join("-");
     const totalPresent = students.filter((s) => s.estado === "Presente").length;
     const totalAbsent = students.filter((s) => s.estado === "Ausente").length;
     const totalLate = students.filter((s) => s.estado === "Tardanza").length;
+    const dayOfWeek = today.toLocaleDateString("es-ES", { weekday: "long" });
     return {
-      date,
-      dayOfWeek: today.toLocaleDateString("es-ES", { weekday: "long" }),
+      date: peruDate,
+      dayOfWeek,
       records: students.reduce((acc, s) => {
         acc[s.id] = {
           studentId: s.id,
