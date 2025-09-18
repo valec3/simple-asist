@@ -9,6 +9,10 @@ class AttendanceService {
     try {
       const docRef = await addDoc(this.collection, attendance);
       console.log("Document written with ID: ", docRef.id);
+      return {
+        response: true,
+        message: "Asistencia registrada",
+      };
     } catch (e) {
       console.error("Error adding document: ", e);
     }

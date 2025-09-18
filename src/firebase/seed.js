@@ -2,7 +2,7 @@
 import { setDoc, doc } from "firebase/firestore";
 import db from "./config.js";
 
-const faculties = [
+export const faculties = [
   { id: "fac-ciencias-agrarias", name: "FACULTAD DE CIENCIAS AGRARIAS" },
   { id: "fac-ingenieria-agricola", name: "FACULTAD DE INGENIERIA AGRICOLA" },
   {
@@ -56,7 +56,7 @@ const faculties = [
   },
 ];
 
-const schools = [
+export const schools = [
   // FACULTAD DE CIENCIAS AGRARIAS
   {
     id: "esc-ing-agronomica",

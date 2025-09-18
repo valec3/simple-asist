@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Table,
   TableBody,
@@ -21,34 +21,11 @@ import EditSquareIcon from "@mui/icons-material/EditSquare";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AddIcon from "@mui/icons-material/Add";
 import { useTheme } from "@mui/material/styles";
+import studentService from "@/firebase/students";
+import ModalAddStudent from "./ModalAddStudent";
 
+// Mapeo de días para mostrar como texto
 const daysMap = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
-
-const students = [
-  {
-    id: "stu-001",
-    code: "20250001",
-    full_name: "Juan Pérez",
-    email: "juan.perez@uni.edu.pe",
-    number: "987654321",
-    faculty: "FACULTAD DE CIENCIAS AGRARIAS",
-    school: "Escuela Profesional de Ingeniería Agronómica",
-    selectedDays: [1, 3], // Lunes y Miércoles
-    createdAt: new Date().toISOString(),
-  },
-  {
-    id: "stu-002",
-    code: "20250002",
-    full_name: "María Gómez",
-    email: "maria.gomez@uni.edu.pe",
-    number: "987654321",
-    faculty: "FACULTAD DE INGENIERÍA",
-    school: "Escuela Profesional de Ingeniería Civil",
-    selectedDays: [2, 4, 6], // Martes, Jueves y Sábado
-    createdAt: new Date().toISOString(),
-  },
-];
-
 // --- Header con buscador, filtros y botón ---
 const TableHeaderStudents = ({ onSearch, onFilterFaculty, onAdd }) => {
   return (
@@ -97,9 +74,18 @@ const TableStudents = () => {
   const [filterFaculty, setFilterFaculty] = useState("");
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
-
+  const [studentsData, setStudentsData] = useState([]);
+  const [modalOpen, setModalOpen] = useState(false);
+  useEffect(() => {
+    const fetchStudents = async () => {
+      const data = await studentService.getAllStudents();
+      setStudentsData(data);
+    };
+    fetchStudents();
+  }, []);
+  console.log(studentsData);
   // Filtrado dinámico
-  const filteredStudents = students.filter(
+  const filteredStudents = studentsData.filter(
     (s) =>
       (s.full_name.toLowerCase().includes(search.toLowerCase()) ||
         s.code.includes(search)) &&
@@ -111,7 +97,7 @@ const TableStudents = () => {
       <TableHeaderStudents
         onSearch={setSearch}
         onFilterFaculty={setFilterFaculty}
-        onAdd={() => alert("Agregar nuevo estudiante")}
+        onAdd={() => setModalOpen(true)}
       />
 
       {/* Vista tipo tabla (desktop) */}
@@ -201,6 +187,15 @@ const TableStudents = () => {
           ))}
         </Stack>
       )}
+
+      <ModalAddStudent
+        open={modalOpen}
+        handleClose={() => setModalOpen(false)}
+        handleSave={(newStudent) => {
+          setStudentsData([...studentsData, newStudent]);
+          studentService.addStudent(newStudent);
+        }}
+      />
     </div>
   );
 };

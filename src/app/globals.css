@@ -31,5 +31,5 @@ body {
 }
 
 .container-page {
-  @apply px-4 md:px-14;
+  @apply px-1 sm:px-4 md:px-14;
 }
