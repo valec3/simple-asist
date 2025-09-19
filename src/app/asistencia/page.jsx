@@ -77,10 +77,12 @@ const AttendanceScreen = () => {
   };
 
   const handleEstado = (id, estado) => {
-    setStudents((prev) =>
-      prev.map((s) => (s.id === id ? { ...s, estado } : s))
+    const newStatesStudents = students.map((s) =>
+      s.id === id ? { ...s, estado } : s
     );
-    localStorage.setItem("students", JSON.stringify(students));
+    setStudents(newStatesStudents);
+    // Actualizar estado en localStorage
+    localStorage.setItem("students", JSON.stringify(newStatesStudents));
   };
   useEffect(() => {
     const fetchStudents = async () => {
