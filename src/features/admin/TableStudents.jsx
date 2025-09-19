@@ -24,10 +24,16 @@ import { useTheme } from "@mui/material/styles";
 import studentService from "@/firebase/students";
 import ModalAddStudent from "./ModalAddStudent";
 import { faculties } from "@/firebase/seed";
+import { toast } from "react-toastify";
 // Mapeo de días para mostrar como texto
 const daysMap = ["Dom", "Lun", "Mar", "Mié", "Jue", "Vie", "Sáb"];
 // --- Header con buscador, filtros y botón ---
-const TableHeaderStudents = ({ onSearch, onFilterFaculty, onAdd }) => {
+const TableHeaderStudents = ({
+  onSearch,
+  onFilterFaculty,
+  onAdd,
+  filterFaculty,
+}) => {
   return (
     <Stack
       direction={{ xs: "column", sm: "row" }}
@@ -50,6 +56,7 @@ const TableHeaderStudents = ({ onSearch, onFilterFaculty, onAdd }) => {
         size="small"
         onChange={(e) => onFilterFaculty(e.target.value)}
         sx={{ minWidth: 200 }}
+        value={filterFaculty}
       >
         <MenuItem value="">Todas</MenuItem>
         {faculties.map((fac) => (
@@ -89,19 +96,22 @@ const TableStudents = () => {
     setEditingStudent(student);
     setModalOpen(true);
   };
-  const handleSubmitStudent = (student) => {
+  const handleSubmitStudent = async (student) => {
     if (editingStudent) {
       // Actualizar estudiante existente
       const updatedStudents = studentsData.map((s) =>
         s.id === student.id ? student : s
       );
       setStudentsData(updatedStudents);
-      studentService.updateStudent(student.id, student);
+      await studentService.updateStudent(student.id, student);
       setEditingStudent(null);
+      toast.success("Estudiante actualizado correctamente");
     } else {
       // Agregar nuevo estudiante
-      setStudentsData([...studentsData, student]);
-      studentService.addStudent(student);
+      const { newStudent } = await studentService.addStudent(student);
+      console.log(" newStudent", newStudent);
+      setStudentsData([...studentsData, newStudent]);
+      toast.success("Estudiante agregado correctamente");
     }
   };
   // Filtrado dinámico
@@ -118,6 +128,7 @@ const TableStudents = () => {
         onSearch={setSearch}
         onFilterFaculty={setFilterFaculty}
         onAdd={() => setModalOpen(true)}
+        filterFaculty={filterFaculty}
       />
 
       {/* Vista tipo tabla (desktop) */}

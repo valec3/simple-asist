@@ -272,10 +272,11 @@ const AttendanceHistory = () => {
                   }}
                 >
                   <Stack
-                    direction="row"
+                    direction={{ xs: "column", sm: "row" }}
                     justifyContent="space-between"
                     alignItems="center"
                     sx={{ width: "100%" }}
+                    gap={2}
                   >
                     <Stack direction="row" alignItems="center" spacing={2}>
                       <Box
@@ -304,7 +305,7 @@ const AttendanceHistory = () => {
                         </Typography>
                       </Box>
                     </Stack>
-                    <Stack direction="row" spacing={1}>
+                    <Stack direction="row" spacing={1} alignItems="center">
                       <StatusChip
                         status="presente"
                         count={attendance.totalPresent}

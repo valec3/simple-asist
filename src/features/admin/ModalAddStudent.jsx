@@ -10,6 +10,7 @@ import {
   FormGroup,
   FormControlLabel,
   Checkbox,
+  CircularProgress,
 } from "@mui/material";
 import { faculties, schools } from "@/firebase/seed";
 import studentService from "@/firebase/students";
@@ -114,7 +115,7 @@ const ModalAddStudent = ({
     setFormData({ ...emptyForm });
     setIsLoading(false);
   };
-
+  console.log(formData);
   return (
     <Modal open={open} onClose={handleClose} sx={{ color: "black" }}>
       <Box sx={style}>
@@ -217,11 +218,11 @@ const ModalAddStudent = ({
                 key={dia}
                 control={
                   <Checkbox
-                    checked={formData.selectedDays.includes(idx)}
-                    onChange={() => toggleDay(idx)}
+                    checked={formData.selectedDays.includes(idx + 1)}
+                    onChange={() => toggleDay(idx + 1)}
                   />
                 }
-                label={dia}
+                label={`${dia}`}
               />
             ))}
           </FormGroup>
@@ -241,7 +242,13 @@ const ModalAddStudent = ({
             Cancelar
           </Button>
           <Button variant="contained" onClick={onSubmit}>
-            {isLoading ? "Guardando..." : "Guardar"}
+            {isLoading ? (
+              <span>
+                <CircularProgress size={24} color="white" />
+              </span>
+            ) : (
+              "Guardar"
+            )}
           </Button>
         </Box>
       </Box>

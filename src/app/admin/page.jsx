@@ -8,7 +8,7 @@ import {
   Paper,
   Divider,
 } from "@mui/material";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import PeopleIcon from "@mui/icons-material/People";
 import DescriptionIcon from "@mui/icons-material/Description";
 import EditDocumentIcon from "@mui/icons-material/EditDocument";
@@ -16,16 +16,27 @@ import BarChartIcon from "@mui/icons-material/BarChart";
 import TrendingUpIcon from "@mui/icons-material/TrendingUp";
 import TableStudents from "@/features/admin/TableStudents";
 import { useRouter } from "next/navigation";
-
+import studentService from "../../firebase/students";
 const Page = () => {
   const router = useRouter();
+  const [students, setStudents] = useState([]);
   const dataStudents = {
-    totalStudents: 5,
-    activeStudents: 4,
-    promedioAsistencia: 80,
-    inasistencias: 1,
+    totalStudents: students.length,
+    activeStudents: students.filter((student) => student.active).length,
+    promedioAsistencia: students.length
+      ? students.reduce((acc, student) => acc + student.asistencia, 0) /
+        students.length
+      : 0,
+    inasistencias: students.filter((student) => !student.asistencia).length,
   };
-
+  useEffect(() => {
+    const fetchStudents = async () => {
+      const students = await studentService.getAllStudents();
+      setStudents(students);
+      console.log(students);
+    };
+    fetchStudents();
+  }, []);
   return (
     <Box sx={{ bgcolor: "#f4f7fe", minHeight: "100vh" }}>
       {/* Header */}

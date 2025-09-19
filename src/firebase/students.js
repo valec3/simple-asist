@@ -25,6 +25,7 @@ class StudentService {
       return {
         response: true,
         message: "Estudiante agregado correctamente",
+        newStudent: { id: docRef.id, ...student },
       };
     } catch (e) {
       console.error("Error adding document: ", e);

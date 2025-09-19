@@ -48,7 +48,6 @@ const AttendanceScreen = () => {
     }
     // Lógica para guardar la
     setIsLoading(true);
-    console.log("Guardar asistencia", students);
     const today = new Date();
 
     const peruDate = new Intl.DateTimeFormat("es-PE", {
@@ -70,18 +69,18 @@ const AttendanceScreen = () => {
         code: s.code,
       })),
     };
-    console.log(attendanceData);
     toast.success("Asistencia guardada correctamente");
     await attendanceService.addAttendance(attendanceData);
     setTimeout(() => {
       setIsLoading(false);
-    }, 2000); // Simula una operación de 2 segundos
+    }, 2000); // Simula loading
   };
 
   const handleEstado = (id, estado) => {
     setStudents((prev) =>
       prev.map((s) => (s.id === id ? { ...s, estado } : s))
     );
+    localStorage.setItem("students", JSON.stringify(students));
   };
   useEffect(() => {
     const fetchStudents = async () => {
@@ -89,6 +88,17 @@ const AttendanceScreen = () => {
       // Filtrar estudiantes que tienen clases el día actual
       const filtered = data.filter((s) => s.selectedDays.includes(indexDay));
       filtered.forEach((s) => (s.estado = "Pendiente"));
+      const storedStudents = localStorage.getItem("students");
+      if (storedStudents) {
+        const parsedStudents = JSON.parse(storedStudents);
+        // Actualizar estados desde localStorage
+        filtered.forEach((s) => {
+          const storedStudent = parsedStudents.find((st) => st.id === s.id);
+          if (storedStudent) {
+            s.estado = storedStudent.estado;
+          }
+        });
+      }
       setStudents(filtered);
     };
     fetchStudents();
@@ -99,14 +109,12 @@ const AttendanceScreen = () => {
   const ausentes = students.filter((s) => s.estado === "Ausente").length;
   const tardanzas = students.filter((s) => s.estado === "Tardanza").length;
   const pendientes = students.filter((s) => s.estado === "Pendiente").length;
-  console.log(students);
   // Filtro por búsqueda
   const filteredStudents = students.filter(
     (s) =>
       s.full_name.toLowerCase().includes(search.toLowerCase()) ||
       s.code.includes(search.toLowerCase())
   );
-  console.log(indexDay);
   return (
     <Box p={3} sx={{ backgroundColor: "#f7f9fc", minHeight: "100vh" }}>
       {/* Header */}
