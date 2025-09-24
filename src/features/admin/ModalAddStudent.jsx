@@ -1,4 +1,5 @@
 "use client";
+import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import {
   Modal,
@@ -263,6 +264,13 @@ const ModalAddStudent = ({
       </Box>
     </Modal>
   );
+};
+
+ModalAddStudent.propTypes = {
+  open: PropTypes.bool.isRequired,
+  handleClose: PropTypes.func.isRequired,
+  handleSave: PropTypes.func.isRequired,
+  initialData: PropTypes.object,
 };
 
 export default ModalAddStudent;
