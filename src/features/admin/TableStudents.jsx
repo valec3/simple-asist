@@ -1,4 +1,5 @@
 "use client";
+import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
 import {
   Table,
@@ -211,7 +212,12 @@ const TableStudents = () => {
                   Días: {student.selectedDays.map((d) => daysMap[d]).join(", ")}
                 </Typography>
                 <Stack direction="row" spacing={1} mt={1}>
-                  <Button variant="outlined" size="small" color="primary">
+                  <Button
+                    variant="outlined"
+                    size="small"
+                    color="primary"
+                    onClick={() => handleOpenModalEdit(student)}
+                  >
                     <EditSquareIcon sx={{ fontSize: 18, mr: 0.5 }} />
                   </Button>
                   <Button variant="outlined" size="small" color="error">
@@ -232,6 +238,25 @@ const TableStudents = () => {
       />
     </div>
   );
+};
+
+// prop types could be added here for better type checking
+TableStudents.propTypes = {
+  students: PropTypes.array.isRequired,
+  filteredStudents: PropTypes.array.isRequired,
+  handleOpenModalEdit: PropTypes.func.isRequired,
+  handleSubmitStudent: PropTypes.func.isRequired,
+  modalOpen: PropTypes.bool.isRequired,
+  setModalOpen: PropTypes.func.isRequired,
+  search: PropTypes.string.isRequired,
+  editingStudent: PropTypes.object,
+};
+
+TableHeaderStudents.propTypes = {
+  onSearch: PropTypes.func.isRequired,
+  onFilterFaculty: PropTypes.func.isRequired,
+  onAdd: PropTypes.func.isRequired,
+  filterFaculty: PropTypes.string.isRequired,
 };
 
 export default TableStudents;

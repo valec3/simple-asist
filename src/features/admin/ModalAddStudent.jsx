@@ -11,6 +11,8 @@ import {
   FormControlLabel,
   Checkbox,
   CircularProgress,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import { faculties, schools } from "@/firebase/seed";
 import studentService from "@/firebase/students";
@@ -19,7 +21,7 @@ const style = {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  width: 520,
+  width: "90%",
   maxHeight: "90vh",
   overflowY: "auto",
   bgcolor: "background.paper",
@@ -52,7 +54,9 @@ const ModalAddStudent = ({
     initialData ? { ...emptyForm, ...initialData } : { ...emptyForm }
   );
   const [isLoading, setIsLoading] = useState(false);
-  // si recibes initialData para editar, lo aplicamos cuando cambie
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+
   useEffect(() => {
     setFormData(
       initialData ? { ...emptyForm, ...initialData } : { ...emptyForm }
@@ -118,7 +122,12 @@ const ModalAddStudent = ({
   console.log(formData);
   return (
     <Modal open={open} onClose={handleClose} sx={{ color: "black" }}>
-      <Box sx={style}>
+      <Box
+        sx={{
+          ...style,
+          width: isMobile ? "90%" : 520,
+        }}
+      >
         <Typography variant="h6" mb={2}>
           {initialData ? "Editar Estudiante" : "Agregar Estudiante"}
         </Typography>
