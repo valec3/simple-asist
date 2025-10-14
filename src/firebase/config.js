@@ -1,6 +1,7 @@
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
+import { getAuth } from "firebase/auth";
+
 const firebaseConfig = {
   apiKey: "AIzaSyDy-DT2xKqBsW23ggd_19oeHNRnlGWV_Lg",
   authDomain: "asistencia-app-d27d6.firebaseapp.com",
@@ -12,5 +13,6 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-export default db;
+export const db = getFirestore(app);
+export const auth = getAuth(app);
+export default app;

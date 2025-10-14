@@ -1,5 +1,5 @@
 import { collection, addDoc, setDoc, doc, getDocs } from "firebase/firestore";
-import db from "./config.js";
+import { db } from "./config.js";
 
 class AttendanceService {
   constructor() {

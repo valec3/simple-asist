@@ -7,6 +7,8 @@ import {
   Button,
   CircularProgress,
   Alert,
+  Box,
+  Divider,
 } from "@mui/material";
 import { useRouter } from "next/navigation";
 const Login = () => {
@@ -25,10 +27,21 @@ const Login = () => {
 
     setTimeout(() => {
       setLoading(false);
+
+      // Verificar credenciales de admin
       if (email === "admin@correo.com" && password === "123456") {
         setSuccess(true);
         router.push("/admin");
-        router;
+      }
+      // Verificar credenciales de estudiante (cualquier email que contenga "estudiante" o "student")
+      else if (
+        (email.toLowerCase().includes("estudiante") ||
+          email.toLowerCase().includes("student") ||
+          email.match(/^stu\d+@/i)) && // Formato STU12345@correo.com
+        password === "123456"
+      ) {
+        setSuccess(true);
+        router.push("/asistencia/scan");
       } else {
         setError("Credenciales inválidas. Intenta de nuevo.");
       }
@@ -102,6 +115,25 @@ const Login = () => {
           )}
         </Button>
       </form>
+
+      <Divider sx={{ my: 3 }} />
+
+      <Box sx={{ bgcolor: "#f5f5f5", p: 2, borderRadius: 1 }}>
+        <Typography
+          variant="caption"
+          color="text.secondary"
+          display="block"
+          gutterBottom
+        >
+          <strong>Credenciales de prueba:</strong>
+        </Typography>
+        <Typography variant="caption" display="block" color="text.secondary">
+          👨‍💼 Admin: admin@correo.com / 123456
+        </Typography>
+        <Typography variant="caption" display="block" color="text.secondary">
+          👨‍🎓 Estudiante: estudiante@correo.com / 123456
+        </Typography>
+      </Box>
     </Paper>
   );
 };
