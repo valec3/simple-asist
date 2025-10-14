@@ -7,22 +7,26 @@ Simple-Asist es una aplicación web diseñada para gestionar el registro de asis
 ## Tecnologías Utilizadas
 
 ### Frontend
+
 - **Next.js 15.5.3** - Framework de React con Server-Side Rendering
 - **React 19.1.0** - Librería de interfaces de usuario
 - **Material-UI 7.3.2** - Sistema de componentes y diseño
 - **Tailwind CSS 4** - Framework de utilidades CSS
 
 ### Backend y Base de Datos
+
 - **Firebase 12.2.1** - Backend as a Service
   - Firebase Authentication - Autenticación de usuarios
   - Cloud Firestore - Base de datos NoSQL
 
 ### Librerías Especializadas
+
 - **jsQR 1.4.0** - Decodificación de códigos QR desde la cámara
 - **qrcode.react 4.1.0** - Generación de códigos QR
 - **react-toastify 11.0.5** - Notificaciones toast
 
 ### Herramientas de Desarrollo
+
 - **ESLint 9.35.0** - Linter de código JavaScript
 - **Turbopack** - Bundler de alta velocidad
 - **PostCSS 4** - Procesador de CSS
@@ -74,18 +78,21 @@ src/
 El sistema maneja dos tipos de usuarios con flujos diferenciados:
 
 #### Administradores
+
 1. Acceden a `/inicio-sesion`
 2. Ingresan credenciales de administrador
 3. Son redirigidos a `/admin`
 4. Pueden gestionar estudiantes y revisar asistencias
 
 #### Estudiantes
+
 1. Acceden a `/inicio-sesion`
 2. Ingresan credenciales de estudiante
 3. Son redirigidos automáticamente a `/asistencia/scan`
 4. Acceden directamente al módulo de registro de asistencia
 
 **Detección de tipo de usuario:**
+
 - Administrador: email específico (admin@correo.com)
 - Estudiante: emails que contengan "estudiante", "student" o con formato `STU[número]@dominio.com`
 
@@ -114,6 +121,7 @@ El flujo de registro de asistencia sigue estos pasos:
    - El sistema detecta automáticamente códigos QR en el campo de visión
 
 **Características técnicas del escáner:**
+
 - Utiliza `getUserMedia` API para acceso a la cámara
 - Decodificación en tiempo real con jsQR
 - Marco visual para guiar al usuario
@@ -123,6 +131,7 @@ El flujo de registro de asistencia sigue estos pasos:
 #### 2.3. Confirmación de Asistencia
 
 1. Al detectar un código QR, el sistema:
+
    - Detiene el escaneo automáticamente
    - Muestra el código detectado en el panel de control
    - Habilita el botón "Confirmar Asistencia"
@@ -130,6 +139,7 @@ El flujo de registro de asistencia sigue estos pasos:
 2. El estudiante revisa el código y confirma
 
 3. El sistema:
+
    - Envía los datos a Firebase (colección `attendances`)
    - Almacena información del registro:
      - Código/ID del estudiante
@@ -146,6 +156,7 @@ El flujo de registro de asistencia sigue estos pasos:
 #### Panel de Administración (`/admin`)
 
 1. Gestión de estudiantes:
+
    - Agregar nuevos estudiantes
    - Editar información existente
    - Eliminar registros
@@ -292,16 +303,19 @@ Permitir filtrado y exportación
 ## Seguridad
 
 ### Autenticación
+
 - Firebase Authentication maneja tokens y sesiones
 - Validación de credenciales en servidor
 - Redirecciones basadas en roles
 
 ### Base de Datos
+
 - Reglas de Firestore para control de acceso
 - Validación de datos en servidor
 - Índices para optimización de consultas
 
 ### Frontend
+
 - Validación de formularios
 - Sanitización de inputs
 - Manejo de errores y estados
